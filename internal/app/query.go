@@ -36,12 +36,22 @@ func TimeQuery(c *cli.Context) error {
 	}
 	defer sconn.Close()
 	st := stock.NewStockServiceClient(sconn)
+	filter := ""
+	switch c.String("query") {
+	case "reginv":
+		filter = "name!~GWDI;label!=AX4"
+	case "gwdi":
+		filter = "name=~GWDI"
+	case "reg":
+		filter = ""
+	}
 	config := &query.Config{
 		StockClient: st,
 		AnnoClient:  ann,
 		Quantity:    c.Int("quantity"),
+		Filter:      filter,
 	}
-	q, err := query.GetRegularInventory(config)
+	q, err := query.GetStrainList(config)
 	if err != nil {
 		return err
 	}

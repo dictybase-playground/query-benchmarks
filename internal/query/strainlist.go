@@ -13,7 +13,7 @@ type Config struct {
 	StockClient stock.StockServiceClient
 	AnnoClient  annotation.TaggedAnnotationServiceClient
 	Quantity    int
-	Query       string
+	Filter      string
 }
 
 type Analytics struct {
@@ -22,14 +22,14 @@ type Analytics struct {
 	Unavailable int
 }
 
-func GetRegularInventory(config *Config) (*Analytics, error) {
+func GetStrainList(config *Config) (*Analytics, error) {
 	ctx := context.Background()
 	start := time.Now()
 	avail := 0
 	unavail := 0
 	for v := 10; v <= config.Quantity; v += 10 {
 		start := time.Now()
-		strains, err := config.StockClient.ListStrains(ctx, &stock.StockParameters{Cursor: 0, Limit: 10, Filter: "name!~GWDI;label!=AX4"})
+		strains, err := config.StockClient.ListStrains(ctx, &stock.StockParameters{Cursor: 0, Limit: 10, Filter: config.Filter})
 		if err != nil {
 			return &Analytics{}, err
 		}
