@@ -79,7 +79,7 @@ func QueryCmd() cli.Command {
 	flags := queryFlags()
 	flags = append(flags, serviceFlags()...)
 	return cli.Command{
-		Name:   "query",
+		Name:   "timer",
 		Usage:  "time the specified query",
 		Action: app.TimeQuery,
 		Flags:  flags,
