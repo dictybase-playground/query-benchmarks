@@ -24,3 +24,6 @@ GLOBAL OPTIONS:
    --help, -h          show help
    --version, -v       print the version
 ```
+
+The `reg` and `gwdi` commands will also generate and save a `.png` image with a
+scatterplot of unavailable strains per query.
