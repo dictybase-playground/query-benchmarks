@@ -25,7 +25,7 @@ func main() {
 			Value: "error",
 		},
 	}
-	app.Commands = []cli.Command{QueryCmd()}
+	app.Commands = []cli.Command{RegCmd(), GWDICmd(), AnnoCmd()}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatalf("error in running command %s", err)
 	}
@@ -62,26 +62,43 @@ func serviceFlags() []cli.Flag {
 
 func queryFlags() []cli.Flag {
 	return []cli.Flag{
-		cli.StringFlag{
-			Name:     "query",
-			Usage:    "stock list query to test",
-			Required: true,
-		},
 		cli.IntFlag{
-			Name:     "quantity",
+			Name:     "qty, q",
 			Usage:    "number of strains to loop through",
 			Required: true,
 		},
 	}
 }
 
-func QueryCmd() cli.Command {
+func RegCmd() cli.Command {
 	flags := queryFlags()
 	flags = append(flags, serviceFlags()...)
 	return cli.Command{
-		Name:   "timer",
-		Usage:  "time the specified query",
-		Action: app.TimeQuery,
+		Name:   "reg",
+		Usage:  "times the query for getting non-gwdi strain list",
+		Action: app.TimeRegQuery,
+		Flags:  flags,
+	}
+}
+
+func GWDICmd() cli.Command {
+	flags := queryFlags()
+	flags = append(flags, serviceFlags()...)
+	return cli.Command{
+		Name:   "gwdi",
+		Usage:  "times the query for getting gwdi strain list",
+		Action: app.TimeGWDIQuery,
+		Flags:  flags,
+	}
+}
+
+func AnnoCmd() cli.Command {
+	flags := queryFlags()
+	flags = append(flags, serviceFlags()...)
+	return cli.Command{
+		Name:   "anno",
+		Usage:  "times the query for getting inventory list first",
+		Action: app.TimeAnnoQuery,
 		Flags:  flags,
 	}
 }
