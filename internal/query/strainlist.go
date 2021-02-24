@@ -42,6 +42,7 @@ func GetStrainList(config *Config) (*Analytics, error) {
 	var cursor int64
 	for v := 10; v <= config.Quantity; v += 10 {
 		uc := 0
+		ac := 0
 		start := time.Now()
 		qc++
 		strains, err := config.StockClient.ListStrains(ctx, &stock.StockParameters{Cursor: cursor, Limit: 10, Filter: config.Filter})
@@ -62,6 +63,7 @@ func GetStrainList(config *Config) (*Analytics, error) {
 				uc++
 			} else {
 				avail++
+				ac++
 			}
 		}
 		elapsed := time.Since(start)
