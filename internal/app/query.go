@@ -37,13 +37,14 @@ func TimeQuery(c *cli.Context) error {
 	defer sconn.Close()
 	st := stock.NewStockServiceClient(sconn)
 	filter := ""
-	switch c.String("query") {
+	q := c.String("query")
+	switch q {
 	case "reginv":
 		filter = "name!~GWDI;label!=AX4"
 	case "gwdi":
 		filter = "name=~GWDI"
-	case "reg":
-		filter = ""
+	case "inv":
+		filter = "ontology==strain_inventory;tag==strain_inventory"
 	}
 	config := &query.Config{
 		StockClient: st,
@@ -51,12 +52,23 @@ func TimeQuery(c *cli.Context) error {
 		Quantity:    c.Int("quantity"),
 		Filter:      filter,
 	}
-	q, err := query.GetStrainList(config)
-	if err != nil {
-		return err
+	if q == "reginv" || q == "gwdi" {
+		l, err := query.GetStrainList(config)
+		if err != nil {
+			return err
+		}
+		log.Printf("full execution took %s", l.Elapsed)
+		log.Printf("total number of available strains: %d", l.Available)
+		log.Printf("total number of unavailable strains: %d", l.Unavailable)
 	}
-	log.Printf("full execution took %s", q.Elapsed)
-	log.Printf("total number of available strains: %d", q.Available)
-	log.Printf("total number of unavailable strains: %d", q.Unavailable)
+	if q == "inv" {
+		l, err := query.GetAnnoList(config)
+		if err != nil {
+			return err
+		}
+		log.Printf("full execution took %s", l.Elapsed)
+		log.Printf("total number of available strains: %d", l.Available)
+		log.Printf("total number of unavailable strains: %d", l.Unavailable)
+	}
 	return nil
 }
